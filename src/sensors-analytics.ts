@@ -4,12 +4,7 @@ import { Writable, WritableOptions } from 'stream'
 
 import 'reflect-metadata'
 import { checkPattern, checkProperties, checkValueType } from './validator'
-import {
-  extractCodeProperties,
-  snakenizeKeys,
-  translateUserAgent,
-  extractTimestamp,
-} from './translators'
+import { extractCodeProperties, snakenizeKeys, extractTimestamp } from './translators'
 import { version as PACKAGE_VERSION } from './read-package-info'
 import _ = require('lodash')
 import { Submitter, SASubmitter } from './submitter'
@@ -250,7 +245,7 @@ export class SensorsAnalytics extends Writable {
       properties: {
         ...snakenizeKeys(SDK_PROPERTIES),
         ...this.superProperties,
-        ...translateUserAgent(properties),
+        ...properties,
       },
     }
   }

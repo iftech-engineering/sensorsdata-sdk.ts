@@ -5,10 +5,11 @@
     "rootDir": "./",
     "module": "commonjs",
     "sourceMap": true,
-    "declaration": false,
+    "declaration": true,
+    "declarationMap": true,
     "target": "es2017",
     "strictNullChecks": true,
-    "typeRoots": ["node_modules/@types"],
+    "typeRoots": ["node_modules/@types", "@types"],
     "strict": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true

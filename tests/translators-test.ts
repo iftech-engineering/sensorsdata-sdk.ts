@@ -6,8 +6,6 @@ import {
   extractTimestamp,
   parseCallInfo,
   extractCodeProperties,
-  parseUserAgent,
-  translateUserAgent,
 } from '../src/translators'
 
 test('should convert to snake case', t => {
@@ -115,78 +113,4 @@ test('should parse native call', t => {
   t.falsy(callInfo!.columnNumber)
   t.is(callInfo!.functionName, 'next')
   t.is(callInfo!.className, 'undefined')
-})
-
-test('should translate user agent', t => {
-  const properties = {
-    value: 100,
-    $userAgent:
-      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2783.5 Safari/537.36',
-  }
-
-  const translatedProps = translateUserAgent(properties)
-
-  t.is(translatedProps!.$os, 'Mac')
-  t.is(translatedProps!.$model, '')
-  t.is(translatedProps!._browser_engine, 'Blink')
-  t.is(translatedProps!.$os_version, '10.11')
-  t.is(translatedProps!.$browser, 'Chrome')
-  t.is(translatedProps!.$browser_version, '53.0')
-
-  t.is(translatedProps!.value, 100)
-  t.falsy(translatedProps.$userAgent)
-})
-
-test('should parse Desktop', t => {
-  const userAgentInfo = parseUserAgent(
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2783.5 Safari/537.36',
-  )
-
-  t.is(userAgentInfo!.$os, 'Mac')
-  t.is(userAgentInfo!.$manufacturer, 'Apple')
-  t.is(userAgentInfo!.$model, '')
-  t.is(userAgentInfo!._browser_engine, 'Blink')
-  t.is(userAgentInfo!.$os_version, '10.11')
-  t.is(userAgentInfo!.$browser, 'Chrome')
-  t.is(userAgentInfo!.$browser_version, '53.0')
-})
-
-test('should parse iOS', t => {
-  const userAgentInfo = parseUserAgent(
-    'Mozilla/5.0 (iPhone; CPU iOS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1',
-  )
-
-  t.is(userAgentInfo!.$os, 'iOS')
-  t.is(userAgentInfo!.$model, 'iPhone')
-  t.is(userAgentInfo!._browser_engine, 'WebKit')
-  t.is(userAgentInfo!.$os_version, '9.1')
-  t.is(userAgentInfo!.$browser, 'Mobile Safari')
-  t.is(userAgentInfo!.$browser_version, '9.0')
-})
-
-test('should parse iPad', t => {
-  const userAgentInfo = parseUserAgent(
-    'Mozilla/5.0 (iPad; CPU OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1',
-  )
-
-  t.is(userAgentInfo!.$os, 'iOS')
-  t.is(userAgentInfo!.$model, 'iPad')
-  t.is(userAgentInfo!._browser_engine, 'WebKit')
-  t.is(userAgentInfo!.$os_version, '9.1')
-  t.is(userAgentInfo!.$browser, 'Mobile Safari')
-  t.is(userAgentInfo!.$browser_version, '9.0')
-})
-
-test('should parse Android', t => {
-  const userAgentInfo = parseUserAgent(
-    'Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.23 Mobile Safari/537.36',
-  )
-
-  t.is(userAgentInfo!.$os, 'Android')
-  t.is(userAgentInfo!.$manufacturer, 'Samsung')
-  t.is(userAgentInfo!.$model, 'GALAXY S5')
-  t.is(userAgentInfo!._browser_engine, 'Blink')
-  t.is(userAgentInfo!.$os_version, '5.0')
-  t.is(userAgentInfo!.$browser, 'Chrome Mobile')
-  t.is(userAgentInfo!.$browser_version, '48.0')
 })

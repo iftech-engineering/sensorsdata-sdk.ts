@@ -1,9 +1,9 @@
-import * as DeviceDetector from 'device-detector-js'
+// import * as DeviceDetector from 'device-detector-js'
 import * as createDebug from 'debug'
 import * as _ from 'lodash'
-
+import * as detector from 'detector'
 const debug = createDebug('ruguoapp:sensorsdata-sdk:translators')
-const detector = new DeviceDetector()
+// const detector = new DeviceDetector()
 
 export const snakenizeKeys = (obj: any) =>
   _.mapKeys(obj, (_v, k: string) => {
@@ -84,33 +84,4 @@ export function extractCodeProperties(callerIndex: number) {
   }
 
   return codeProperties
-}
-
-export function parseUserAgent(userAgent?: string) {
-  if (!userAgent) {
-    return {}
-  }
-
-  const result = detector.parse(userAgent)
-
-  return {
-    $os: _.get(result, 'os.name'),
-    $manufacturer: _.get(result, 'device.brand'),
-    $model: _.get(result, 'device.model'),
-    _browser_engine: _.get(result, 'client.engine'),
-    $os_version: String(_.get(result, 'os.version')),
-    $browser: _.get(result, 'client.name'),
-    $browser_version: String(_.get(result, 'client.version')),
-  }
-}
-export function translateUserAgent(properties: any) {
-  const { $userAgent } = properties
-
-  if (!$userAgent) {
-    return properties
-  }
-
-  const userAgentInfo = parseUserAgent($userAgent)
-
-  return { ..._.omit(properties, '$userAgent'), ...userAgentInfo }
 }
