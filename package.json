@@ -1,0 +1,61 @@
+{
+  "name": "@ruguoapp/sensorsdata-sdk",
+  "version": "0.1.0",
+  "description": "SDK of sensorsdata Written in Typescript",
+  "main": "dist/src/sensors-analytics.js",
+  "scripts": {
+    "compile": "tsc",
+    "clean": "rm -rf dist",
+    "lint": "tslint --project .",
+    "ci": "ava --serial dist/tests/**/*-test.js --update-snapshots",
+    "purge": "rm -rf package-lock.json node_modules && npm run clean",
+    "prettier": "prettier --config .prettierrc --write '**/*'",
+    "test": "npm run compile && NODE_ENV=dev npm run ci",
+    "build": "npm run clean && npm run compile && jike-docker-build"
+  },
+  "author": "ruguoapp",
+  "dependencies": {
+    "bluebird": "^3.5.3",
+    "browser": "^0.2.6",
+    "debug": "^4.1.1",
+    "detector": "^2.5.0",
+    "device-detector-js": "1.0.19",
+    "form-urlencoded": "^3.0.0",
+    "lodash": "^4.17.11",
+    "moment": "^2.23.0",
+    "ramda": "^0.26.1",
+    "reflect-metadata": "^0.1.12",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.5",
+    "source-map-support": "^0.5.9"
+  },
+  "devDependencies": {
+    "@types/bluebird": "^3.5.25",
+    "@types/debug": "0.0.31",
+    "@types/form-urlencoded": "^2.0.0",
+    "@types/lodash": "^4.14.119",
+    "@types/nock": "^9.3.0",
+    "@types/node": "^10.12.10",
+    "@types/ramda": "^0.25.46",
+    "@types/request-promise-native": "^1.0.15",
+    "@types/sinon": "^5.0.7",
+    "@types/supertest": "^2.0.6",
+    "ava": "^1.0.1",
+    "husky": "^1.2.0",
+    "nock": "^10.0.2",
+    "nodemon": "^1.18.7",
+    "prettier": "^1.15.2",
+    "pretty-quick": "^1.8.0",
+    "sinon": "^7.1.1",
+    "supertest": "^3.3.0",
+    "tslint": "^5.11.0",
+    "tslint-config-prettier": "^1.17.0",
+    "tslint-jike-node": "^0.0.17",
+    "typescript": "^3.1.6"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  }
+}
