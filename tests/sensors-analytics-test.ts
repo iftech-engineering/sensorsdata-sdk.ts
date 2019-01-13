@@ -25,7 +25,7 @@ test('should complete event', async t => {
   await Bluebird.delay(1000)
   const values = _.flatten(submitter.data)
   t.is(values.length, 4)
-  t.snapshot(values.map(msg => _.omit(msg, 'time', 'lib.$lib_version')))
+  t.snapshot(values.map(msg => _.omit(msg, 'time', 'lib.$lib_version', 'lib.$lib_detail')))
 })
 
 test('should snakenizeKeys property name by default', async t => {
@@ -107,5 +107,8 @@ test('should be writable as object stream', async t => {
   const msg = { type: 'track', distinctId, event: 'a', properties: {} }
   stream.push(msg)
   await Bluebird.delay(500)
-  t.deepEqual(_.flatten((submitter as MockSubmitter).data), [msg])
+  const values = _.flatten((submitter as MockSubmitter).data)
+  t.truthy(values[0])
+  t.is(values[0].distinct_id, 'user-id')
+  t.is(values[0].original_id, undefined)
 })

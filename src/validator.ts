@@ -88,3 +88,81 @@ export function checkProperties(obj: any, checker: Function) {
   Object.keys(obj).forEach(key => checker(key, key))
   return obj
 }
+
+interface ParameterItem {
+  index: number
+  name: string
+}
+const requiredMetadataKey = Symbol('required')
+const patternCheckedMetadataKey = Symbol('patternChecked')
+const propertiesCheckedMetadataKey = Symbol('propertiesChecked')
+
+function addParameterValidator(
+  name: string,
+  metaKey: symbol,
+  target: Object,
+  propertyKey: string | symbol,
+  parameterIndex: number,
+) {
+  const existingParameters: ParameterItem[] =
+    Reflect.getOwnMetadata(metaKey, target, propertyKey) || []
+  existingParameters.push({ index: parameterIndex, name })
+  Reflect.defineMetadata(metaKey, existingParameters, target, propertyKey)
+}
+
+export const required = (name: string) => (...args: [Object, string | symbol, number]) => {
+  addParameterValidator(name, requiredMetadataKey, ...args)
+}
+
+export const patternChecked = (name: string) => (...args: [Object, string | symbol, number]) => {
+  addParameterValidator(name, patternCheckedMetadataKey, ...args)
+}
+
+export const propertiesChecked = (name: string) => (...args: [Object, string | symbol, number]) => {
+  addParameterValidator(name, propertiesCheckedMetadataKey, ...args)
+}
+
+export function doValidate(
+  validator: (value: any, parameterName: string) => void,
+  args: any[],
+  parameters?: ParameterItem[],
+) {
+  if (!parameters || !parameters.length) {
+    return
+  }
+  for (const parameter of parameters) {
+    validator(args[parameter.index], parameter.name)
+  }
+}
+
+export function validate(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<(...params: any[]) => any>,
+) {
+  const method = descriptor.value
+  descriptor.value = function(...args: any[]) {
+    // Required
+    doValidate(
+      (value, name) => {
+        if (!value) {
+          throw new Error(`Missing required argument: ${name}.`)
+        }
+      },
+      args,
+      Reflect.getOwnMetadata(requiredMetadataKey, target, propertyName),
+    )
+    // PatternChecked
+    doValidate(
+      checkPattern,
+      args,
+      Reflect.getOwnMetadata(patternCheckedMetadataKey, target, propertyName),
+    )
+    doValidate(
+      (value: any) => checkProperties(value, checkValueType),
+      args,
+      Reflect.getOwnMetadata(propertiesCheckedMetadataKey, target, propertyName),
+    )
+    return method!.apply(this, args)
+  }
+}
