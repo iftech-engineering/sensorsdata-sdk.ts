@@ -1,5 +1,5 @@
 {
-  "name": "@ruguoapp/sensorsdata-sdk",
+  "name": "sensorsdata-sdk",
   "version": "0.1.0",
   "description": "SDK of sensorsdata Written in Typescript",
   "main": "dist/src/sensors-analytics.js",
