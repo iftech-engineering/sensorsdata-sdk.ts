@@ -4,6 +4,7 @@ import _test, { TestInterface } from 'ava'
 import _ = require('lodash')
 import * as Bluebird from 'bluebird'
 import { MockSubmitter } from './helper'
+import { Readable } from 'stream'
 
 const distinctId = 'user-id'
 
@@ -24,7 +25,7 @@ test('should complete event', async t => {
   await Bluebird.delay(1000)
   const values = _.flatten(submitter.data)
   t.is(values.length, 4)
-  t.snapshot(values.map(msg => _.omit(msg, 'time')))
+  t.snapshot(values.map(msg => _.omit(msg, 'time', 'lib.$lib_version')))
 })
 
 test('should snakenizeKeys property name by default', async t => {
@@ -91,4 +92,20 @@ test('should flush data in batch when close', async t => {
 
   const values = _.flatten(submitter.data).map(e => e.event)
   t.deepEqual(values, ['a', 'b', 'c'])
+})
+
+test('should be writable as object stream', async t => {
+  const { sa, submitter } = t.context
+  let count = 3
+  const stream = new Readable({
+    objectMode: true,
+    read(_size?: number) {
+      return count-- > 0
+    },
+  })
+  stream.pipe(sa)
+  const msg = { type: 'track', distinctId, event: 'a', properties: {} }
+  stream.push(msg)
+  await Bluebird.delay(500)
+  t.deepEqual(_.flatten((submitter as MockSubmitter).data), [msg])
 })

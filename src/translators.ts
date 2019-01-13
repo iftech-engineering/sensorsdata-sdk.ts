@@ -1,7 +1,6 @@
 // import * as DeviceDetector from 'device-detector-js'
 import * as createDebug from 'debug'
 import * as _ from 'lodash'
-import * as detector from 'detector'
 const debug = createDebug('ruguoapp:sensorsdata-sdk:translators')
 // const detector = new DeviceDetector()
 

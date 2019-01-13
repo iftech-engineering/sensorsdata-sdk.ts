@@ -116,7 +116,7 @@ export class SensorsAnalytics extends Writable {
     super({ ...streamOptions, objectMode: true })
     const optionsWithDefault = {
       ...{
-        timeout: 30,
+        timeout: 5000,
         gzip: true,
         dryRun: false,
         debug: false,
@@ -167,7 +167,6 @@ export class SensorsAnalytics extends Writable {
       originalId?: string
       properties: any
       lib?: _.Dictionary<string | undefined>
-      callIndex?: number
     },
     _encoding: string,
     callback: Function,
