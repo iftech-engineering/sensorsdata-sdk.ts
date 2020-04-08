@@ -1,6 +1,6 @@
 {
   "name": "sensorsdata-sdk",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "description": "SDK of sensorsdata Written in Typescript",
   "main": "dist/src/sensors-analytics.js",
   "scripts": {
