@@ -129,22 +129,27 @@ export class SensorsAnalytics extends Writable {
 
     this.dataQueue.push(envelope)
     const now = Date.now()
-    if (
-      this.debug ||
-      this.dataQueue.length >= this.options.buffCount ||
-      now >= this.nextSubmitTime
-    ) {
-      if (this.timer) {
-        clearTimeout(this.timer)
+    try {
+      if (
+        this.debug ||
+        this.dataQueue.length >= this.options.buffCount ||
+        now >= this.nextSubmitTime
+      ) {
+        if (this.timer) {
+          clearTimeout(this.timer)
+        }
+        await this.flush()
+      } else {
+        if (this.timer) {
+          clearTimeout(this.timer)
+        }
+        this.timer = setTimeout(() => this.flush(), this.nextSubmitTime - now)
       }
-      await this.flush()
-    } else {
-      if (this.timer) {
-        clearTimeout(this.timer)
-      }
-      this.timer = setTimeout(() => this.flush(), this.nextSubmitTime - now)
+
+      callback()
+    } catch (err) {
+      callback(err)
     }
-    callback()
   }
 
   async submit(messages: object[]) {
@@ -255,7 +260,7 @@ export class SensorsAnalytics extends Writable {
     await this.submit(this.popAllData())
   }
   async close() {
-    await new Promise(resolve => {
+    await new Promise((resolve) => {
       super.end(() => resolve())
     })
     await this.flush()
